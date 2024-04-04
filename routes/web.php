@@ -48,9 +48,16 @@ if (in_array($fileExtension, ['ico','jpg', 'jpeg', 'png', 'gif','js','css'])) {
   if($isfile)
   $newheader = [];
   $newheader = [];
-//   dd($newheader);
+
+//
+//   dd($req->headers->all(),request()->cookie('PHPSESSID'));
+
+$seshid = request()->cookie('PHPSESSID');
   $resp = $client->request($req->method(), $path, [
-        // 'headers' => $newheader,
+        'headers' =>  [
+            'Cookie'=>"PHPSESSID=$seshid;",
+        ],
+        // 'headers'=>$req->headers->all(),
         'query' => $req->query(),
         'body' => $req->getContent(),
         'form_params' => $req->post(),
@@ -62,7 +69,11 @@ if (in_array($fileExtension, ['ico','jpg', 'jpeg', 'png', 'gif','js','css'])) {
 //     $resp->getHeaders()
 
 // );
-$getContenets  = str_replace("https://staging.travware.info:443", "http://localhost", $resp->getBody()->getContents());
+$getContenets  = str_replace("baseUrl = 'https://staging.travware.info:443", "baseUrl = 'http://localhost", $resp->getBody()->getContents());
+$getContenets  = str_replace('src="html', 'src="https://staging.travware.info/html',$getContenets);
+$getContenets  = str_replace('src="/html', 'src="https://staging.travware.info/html',$getContenets);
+
+// dd($getContenets);
 $newheader = $resp->getHeaders();
 
 // dd($newheader);
@@ -104,7 +115,7 @@ unset($newheader['Transfer-Encoding']);
   return $client->request($req->method(), $path);
 })
 ->where('path', '.*')
-->withoutMiddleware(['csrf']);
+->withoutMiddleware(['csrf', \Illuminate\Cookie\Middleware\EncryptCookies::class,]);
 
 // Route::get('/', function () {
 
