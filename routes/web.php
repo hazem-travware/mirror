@@ -21,7 +21,6 @@ Route::any('/{path?}', function(Request $req, $path = null) {
 
   $client = new HttpClient([
     // 'base_uri' => 'http://app:8181',
-        'base_uri' => 'https://refon-loyalty.com',
         'base_uri' => 'https://staging.travware.info:443',
     'http_errors' => false, // disable guzzle exception on 4xx or 5xx response code
 
